@@ -2,7 +2,7 @@
 Mytherra Core integration/staging tree
 =====================================
 
-https://bitcoincore.org
+https://www.mytherrablockchain.org/
 
 For an immediately usable, binary version of the Mytherra Core software, see
 https://bitcoincore.org/en/download/.
