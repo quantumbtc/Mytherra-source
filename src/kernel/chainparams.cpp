@@ -113,7 +113,7 @@ public:
         pchMessageStart[1] = 0x12;
         pchMessageStart[2] = 0x70;
         pchMessageStart[3] = 0x64;
-        nDefaultPort = 24156;
+        nDefaultPort = 26156;
         nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 5;
         m_assumed_chain_state_size = 5;
@@ -152,7 +152,7 @@ public:
         // This is fine at runtime as we'll fall back to using them as an addrfetch if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        vSeeds.emplace_back("217.154.114.75");
+        vSeeds.emplace_back("seed.bitquantum.network");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,25); // "btq" prefix
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,0);
@@ -229,7 +229,7 @@ public:
         pchMessageStart[1] = 0xa4;
         pchMessageStart[2] = 0xc4;
         pchMessageStart[3] = 0x7e;
-        nDefaultPort = 34156;
+        nDefaultPort = 36156;
         nPruneAfterHeight = 1000;
         m_assumed_blockchain_size = 42;
         m_assumed_chain_state_size = 3;
@@ -353,7 +353,7 @@ public:
         uint256 hash = h.GetHash();
         memcpy(pchMessageStart, hash.begin(), 4);
 
-        nDefaultPort = 324156;
+        nDefaultPort = 56156;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1752832800, 8122285, 0x1e0377ae, 1, 10 * COIN);

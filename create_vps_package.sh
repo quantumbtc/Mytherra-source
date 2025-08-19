@@ -24,8 +24,8 @@ cat > $VPS_PACKAGE_DIR/config/mytherra.conf << 'EOF'
 # Mytherra VPS Node Configuration
 # Network settings
 listen=1
-port=24155
-rpcport=24156
+port=26156
+rpcport=26155
 rpcbind=127.0.0.1
 rpcallowip=127.0.0.1
 
@@ -36,7 +36,7 @@ daemon=1
 # Network discovery
 discover=1
 dnsseed=1
-addnode=127.0.0.1:24155
+addnode=seed.bitquantum.network:26156
 
 # Logging
 debug=1
