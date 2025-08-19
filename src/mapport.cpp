@@ -165,7 +165,14 @@ static bool ProcessUpnp()
     struct IGDdatas data;
     int r;
 
+    // UPNP_GetValidIGD signature changed in newer miniupnpc releases.
+    // Use the 7-argument form when available, otherwise fall back to the
+    // classic 5-argument form.
+#if defined(MINIUPNPC_API_VERSION) && (MINIUPNPC_API_VERSION >= 18)
     r = UPNP_GetValidIGD(devlist, &urls, &data, lanaddr, sizeof(lanaddr), NULL, 0);
+#else
+    r = UPNP_GetValidIGD(devlist, &urls, &data, lanaddr, sizeof(lanaddr));
+#endif
     if (r == 1)
     {
         if (fDiscover) {
