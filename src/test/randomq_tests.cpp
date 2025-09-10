@@ -25,14 +25,14 @@ BOOST_AUTO_TEST_CASE(randomq_basic_hash_test)
     randomq.SetRounds(100); // Use fewer rounds for testing
     
     const std::string test_data = "Hello, RandomQ!";
-    randomq.Write(std::span<const unsigned char>(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size()));
+    randomq.Write(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size());
     
     unsigned char hash[CRandomQ::OUTPUT_SIZE];
     randomq.Finalize(hash);
     
     // Verify hash is not all zeros
     bool all_zeros = true;
-    for (int i = 0; i < CRandomQ::OUTPUT_SIZE; i++) {
+    for (size_t i = 0; i < CRandomQ::OUTPUT_SIZE; i++) {
         if (hash[i] != 0) {
             all_zeros = false;
             break;
@@ -48,10 +48,10 @@ BOOST_AUTO_TEST_CASE(randomq_hash_pipeline_test)
     hasher.SetRandomQRounds(100); // Use fewer rounds for testing
     
     const std::string test_data = "Test RandomQ Pipeline";
-    hasher.Write(std::span<const unsigned char>(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size()));
+    hasher.Write(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size());
     
     uint256 result;
-    hasher.Finalize(std::span<unsigned char>(result.begin(), result.size()));
+    hasher.Finalize(result.begin());
     
     // Verify result is not null
     BOOST_CHECK(!result.IsNull());
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(randomq_mining_test)
     header.hashPrevBlock.SetNull();
     header.hashMerkleRoot.SetNull();
     header.nTime = 1234567890;
-    header.nBits = params.powLimit.GetCompact();
+    header.nBits = UintToArith256(params.powLimit).GetCompact();
     header.nNonce = 0;
     
     // Test RandomQ hash calculation
@@ -127,12 +127,12 @@ BOOST_AUTO_TEST_CASE(randomq_consistency_test)
     hasher1.SetRandomQRounds(100);
     hasher2.SetRandomQRounds(100);
     
-    hasher1.Write(std::span<const unsigned char>(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size()));
-    hasher2.Write(std::span<const unsigned char>(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size()));
+    hasher1.Write(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size());
+    hasher2.Write(reinterpret_cast<const unsigned char*>(test_data.data()), test_data.size());
     
     uint256 result1, result2;
-    hasher1.Finalize(std::span<unsigned char>(result1.begin(), result1.size()));
-    hasher2.Finalize(std::span<unsigned char>(result2.begin(), result2.size()));
+    hasher1.Finalize(result1.begin());
+    hasher2.Finalize(result2.begin());
     
     BOOST_CHECK(result1 == result2);
 }
