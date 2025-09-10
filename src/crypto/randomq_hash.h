@@ -23,8 +23,8 @@ private:
 public:
     static const size_t OUTPUT_SIZE = CSHA256::OUTPUT_SIZE;
 
-    void Finalize(std::span<unsigned char> output) {
-        assert(output.size() == OUTPUT_SIZE);
+    void Finalize(unsigned char* output) {
+        assert(output != nullptr);
         
         // First SHA256
         unsigned char first_hash[CSHA256::OUTPUT_SIZE];
@@ -33,16 +33,16 @@ public:
         // RandomQ
         unsigned char randomq_hash[CRandomQ::OUTPUT_SIZE];
         randomq.Reset();
-        randomq.Write(std::span<const unsigned char>(first_hash, CSHA256::OUTPUT_SIZE));
+        randomq.Write(first_hash, CSHA256::OUTPUT_SIZE);
         randomq.Finalize(randomq_hash);
         
         // Second SHA256
         sha256_second.Write(randomq_hash, CRandomQ::OUTPUT_SIZE);
-        sha256_second.Finalize(output.data());
+        sha256_second.Finalize(output);
     }
 
-    CRandomQHash& Write(std::span<const unsigned char> input) {
-        sha256_first.Write(input.data(), input.size());
+    CRandomQHash& Write(const unsigned char* data, size_t len) {
+        sha256_first.Write(data, len);
         return *this;
     }
 

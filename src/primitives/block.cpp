@@ -15,13 +15,13 @@ uint256 CBlockHeader::GetHash() const
     // Use RandomQ hash: SHA256 -> RandomQ -> SHA256
     CRandomQHash hasher;
     std::vector<unsigned char> serialized;
-    VectorWriter(serialized, 0, *this);
-    hasher.Write(std::span<const unsigned char>(serialized.data(), serialized.size()));
+    CVectorWriter(serialized, 0, *this);
+    hasher.Write(serialized.data(), serialized.size());
     hasher.SetRandomQNonce(nNonce);
     hasher.SetRandomQRounds(8192);
 
     uint256 result;
-    hasher.Finalize(std::span<unsigned char>(result.begin(), result.size()));
+    hasher.Finalize(result.begin());
     return result;
 }
 

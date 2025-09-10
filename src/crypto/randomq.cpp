@@ -56,20 +56,20 @@ void CRandomQ::Initialize(const uint8_t* seed, size_t seed_len)
     }
 }
 
-CRandomQ& CRandomQ::Write(std::span<const unsigned char> input)
+CRandomQ& CRandomQ::Write(const unsigned char* data, size_t len)
 {
-    if (input.empty()) return *this;
+    if (len == 0) return *this;
     
     // Process input in 64-byte chunks
     size_t offset = 0;
-    while (offset < input.size()) {
-        size_t chunk_size = std::min<size_t>(64, input.size() - offset);
+    while (offset < len) {
+        size_t chunk_size = std::min<size_t>(64, len - offset);
         
         // Mix input chunk into state
         for (size_t i = 0; i < chunk_size / 8 && i < 8; i++) {
             uint64_t chunk = 0;
-            for (size_t j = 0; j < 8 && offset + i * 8 + j < input.size(); j++) {
-                chunk |= static_cast<uint64_t>(input[offset + i * 8 + j]) << (j * 8);
+            for (size_t j = 0; j < 8 && offset + i * 8 + j < len; j++) {
+                chunk |= static_cast<uint64_t>(data[offset + i * 8 + j]) << (j * 8);
             }
             state[i] ^= chunk;
         }

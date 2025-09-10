@@ -32,7 +32,7 @@ public:
     void Initialize(const uint8_t* seed, size_t seed_len);
     
     /** Process input data */
-    CRandomQ& Write(std::span<const unsigned char> input);
+    CRandomQ& Write(const unsigned char* data, size_t len);
     
     /** Finalize and get the hash result */
     void Finalize(unsigned char hash[OUTPUT_SIZE]);
