@@ -9,6 +9,8 @@
 #include <chain.h>
 #include <primitives/block.h>
 #include <uint256.h>
+#include <crypto/randomq_mining.h>
+#include <util/check.h>
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
@@ -122,7 +124,24 @@ bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t heig
     return true;
 }
 
+// Bypasses the actual proof of work check during fuzz testing with a simplified validation checking whether
+// the most significant bit of the last byte of the hash is set.
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+{
+    if (EnableFuzzDeterminism()) return (hash.data()[31] & 0x80) == 0;
+    return CheckProofOfWorkImpl(hash, nBits, params);
+}
+
+// CheckProofOfWork with CBlockHeader parameter - supports RandomQ algorithm
+bool CheckProofOfWork(const CBlockHeader& block, unsigned int nBits, const Consensus::Params& params)
+{
+    if (EnableFuzzDeterminism()) return (block.GetHash().data()[31] & 0x80) == 0;
+    
+    // Use RandomQ algorithm for proof of work checking
+    return RandomQMining::CheckRandomQProofOfWork(block, nBits, params.powLimit);
+}
+
+std::optional<arith_uint256> DeriveTarget(unsigned int nBits, const uint256 pow_limit)
 {
     bool fNegative;
     bool fOverflow;
@@ -131,8 +150,16 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
-        return false;
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(pow_limit))
+        return {};
+
+    return bnTarget;
+}
+
+bool CheckProofOfWorkImpl(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+{
+    auto bnTarget{DeriveTarget(nBits, params.powLimit)};
+    if (!bnTarget) return false;
 
     // Check proof of work matches claimed amount
     if (UintToArith256(hash) > bnTarget)

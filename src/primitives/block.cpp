@@ -6,11 +6,23 @@
 #include <primitives/block.h>
 
 #include <hash.h>
+#include <crypto/randomq_hash.h>
+#include <streams.h>
 #include <tinyformat.h>
 
 uint256 CBlockHeader::GetHash() const
 {
-    return SerializeHash(*this);
+    // Use RandomQ hash: SHA256 -> RandomQ -> SHA256
+    CRandomQHash hasher;
+    std::vector<unsigned char> serialized;
+    VectorWriter(serialized, 0, *this);
+    hasher.Write(std::span<const unsigned char>(serialized.data(), serialized.size()));
+    hasher.SetRandomQNonce(nNonce);
+    hasher.SetRandomQRounds(8192);
+
+    uint256 result;
+    hasher.Finalize(std::span<unsigned char>(result.begin(), result.size()));
+    return result;
 }
 
 std::string CBlock::ToString() const

@@ -546,6 +546,11 @@ crypto_libmytherra_crypto_base_la_SOURCES = \
   crypto/poly1305.cpp \
   crypto/muhash.h \
   crypto/muhash.cpp \
+  crypto/randomq.h \
+  crypto/randomq.cpp \
+  crypto/randomq_hash.h \
+  crypto/randomq_mining.h \
+  crypto/randomq_mining.cpp \
   crypto/ripemd160.cpp \
   crypto/ripemd160.h \
   crypto/sha1.cpp \
