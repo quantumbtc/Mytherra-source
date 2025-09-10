@@ -18,6 +18,8 @@
 #include <util/system.h>
 #include <util/translation.h>
 #include <version.h>
+#include <pow.h>
+#include <primitives/block.h>
 
 #include <atomic>
 #include <cstdio>
