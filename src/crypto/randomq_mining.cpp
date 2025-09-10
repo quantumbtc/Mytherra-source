@@ -11,6 +11,7 @@
 #include <arith_uint256.h>
 #include <logging.h>
 #include <streams.h>
+#include <version.h>
 #include <thread>
 #include <atomic>
 #include <vector>

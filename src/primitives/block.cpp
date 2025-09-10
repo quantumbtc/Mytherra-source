@@ -8,6 +8,7 @@
 #include <hash.h>
 #include <crypto/randomq_hash.h>
 #include <streams.h>
+#include <version.h>
 #include <tinyformat.h>
 
 uint256 CBlockHeader::GetHash() const
