@@ -15,7 +15,7 @@ uint256 CBlockHeader::GetHash() const
     // Use RandomQ hash: SHA256 -> RandomQ -> SHA256
     CRandomQHash hasher;
     std::vector<unsigned char> serialized;
-    CVectorWriter(serialized, 0, *this);
+    CVectorWriter(SER_NETWORK, INIT_PROTO_VERSION, serialized, 0, *this);
     hasher.Write(serialized.data(), serialized.size());
     hasher.SetRandomQNonce(nNonce);
     hasher.SetRandomQRounds(8192);

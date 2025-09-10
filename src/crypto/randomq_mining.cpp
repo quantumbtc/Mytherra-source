@@ -56,7 +56,7 @@ uint256 CalculateRandomQHash(const CBlockHeader& block)
 {
     CRandomQHash hasher;
     std::vector<unsigned char> serialized;
-    CVectorWriter(serialized, 0, block);
+    CVectorWriter(SER_NETWORK, INIT_PROTO_VERSION, serialized, 0, block);
     hasher.Write(serialized.data(), serialized.size());
     hasher.SetRandomQNonce(block.nNonce);
     hasher.SetRandomQRounds(8192);
@@ -75,7 +75,7 @@ uint256 CalculateRandomQHashOptimized(const CBlockHeader& block, uint32_t nonce)
     // Calculate hash
     CRandomQHash hasher;
     std::vector<unsigned char> serialized;
-    CVectorWriter(serialized, 0, headerCopy);
+    CVectorWriter(SER_NETWORK, INIT_PROTO_VERSION, serialized, 0, headerCopy);
     hasher.Write(serialized.data(), serialized.size());
     hasher.SetRandomQNonce(nonce);
     hasher.SetRandomQRounds(8192);
