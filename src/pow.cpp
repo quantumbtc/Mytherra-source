@@ -125,6 +125,19 @@ bool PermittedDifficultyTransition(const Consensus::Params& params, int64_t heig
     return true;
 }
 
+// Internal implementation of proof of work check
+bool CheckProofOfWorkImpl(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+{
+    auto bnTarget{DeriveTarget(nBits, params.powLimit)};
+    if (!bnTarget) return false;
+
+    // Check proof of work matches claimed amount
+    if (UintToArith256(hash) > *bnTarget)
+        return false;
+
+    return true;
+}
+
 // Bypasses the actual proof of work check during fuzz testing with a simplified validation checking whether
 // the most significant bit of the last byte of the hash is set.
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
@@ -154,14 +167,3 @@ std::optional<arith_uint256> DeriveTarget(unsigned int nBits, const uint256 pow_
     return bnTarget;
 }
 
-bool CheckProofOfWorkImpl(uint256 hash, unsigned int nBits, const Consensus::Params& params)
-{
-    auto bnTarget{DeriveTarget(nBits, params.powLimit)};
-    if (!bnTarget) return false;
-
-    // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
-        return false;
-
-    return true;
-}
